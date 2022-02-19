@@ -12,14 +12,17 @@ import java.util.List;
 
 public class ip1 {
     public static final String URL = "https://www.business-gazeta.ru";
-    public static final int MIN_PAGES = 1;
+    public static final int MIN_PAGES = 100;
     public static final int MIN_WORDS = 1000;
 
     public static void main(String[] args) throws IOException {
         List<String> links = getLinks();
         for (int i = 0; i < links.size(); i++) {
-            writePage(i, getPage(links.get(i)).html());
-            writeIndex(i, links.get(i));
+            String page = getPage(links.get(i)).html();
+            if (getNumberOfWords(extractText(page)) > MIN_WORDS) {
+                writePage(i, page);
+                writeIndex(i, links.get(i));
+            }
         }
     }
 
@@ -47,7 +50,7 @@ public class ip1 {
                 if (link.contains("#")) {
                     link = link.substring(0, link.indexOf("#"));
                 }
-                if (link.startsWith("/") && !link.equals("/") && getNumberOfWords(page.text()) > MIN_WORDS) {
+                if (link.startsWith("/") && !link.equals("/")) {
                     links.add(URL + link);
                 }
             }
